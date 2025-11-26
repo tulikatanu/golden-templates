@@ -9,4 +9,3 @@ spec:
   type: service
   owner: ${{ values.owner }}
   lifecycle: experimental
-
