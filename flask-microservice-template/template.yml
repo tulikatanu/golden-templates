@@ -62,7 +62,7 @@ spec:
       name: Publish to GitHub
       action: publish:github
       input:
-        #repoUrl: github.com?repo=${{ parameters.repo }}&owner=ramannkhanna2
+        #repoUrl: github.com?repo=${{ parameters.repo }}&owner=tulikatanu
         repoUrl: github.com?owner=tulikatanu&repo=${{ parameters.repo }}
         repoVisibility: ${{ parameters.repoVisibility }}
 
