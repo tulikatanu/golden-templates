@@ -28,10 +28,15 @@ spec:
           type: string
           title: S3 Bucket Name
           description: Globally unique S3 bucket name
-        instancetype:
+        instancetype: 
           type: string
-          title: Select the compute requirement ( t2.micro /t3/micro )
-          description : compute of the vm
+          title: Provide config for compute
+          description: Size of vm
+        branchsuffix:
+          type: string
+          title: Unique PR branch Suffix
+          description: Leave this if ur creating the TF stack for the first time..
+          
 
   steps:
     - id: fetch
@@ -45,20 +50,40 @@ spec:
           vpc_cidr: ${{ parameters.vpc_cidr }}
           s3_bucket_name: ${{ parameters.s3_bucket_name }}
           instancetype: ${{ parameters.instancetype }}
+        
 
     - id: publish
       name: Publish to GitHub
       action: publish:github
       input:
         repoUrl: github.com?owner=tulikatanu&repo=${{ parameters.project_name }}-infra
-        repoVisibility: private
-
+        repoVisibility: public
+    - id: wait
+      name: Wait for GitHub to catch up
+      action: debug:wait
+      input:
+        seconds: 5    
     - id: register
       name: Register Infra in Backstage Catalog
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
 
+
+
+    
+    
+    #In prod , we add a condition in prev steps if the github repo already exists or not than creates a PR for every change ... 
+    # - id: publish
+    #   name: Create PR on existing repo
+    #   action: publish:github:pull-request
+    #   input:
+    #     repoUrl: github.com?owner=tulikatanu&repo=${{ parameters.project_name }}-infra
+    #     branchName: "scaffolder-${{ parameters.project_name }}-${{ parameters.branchsuffix }}"
+    #     title: "Infra Update for ${{ parameters.project_name }}"
+    #     description: "Automatic scaffolder update."
+
+        
   output:
     links:
       - title: GitHub Repository
