@@ -45,4 +45,3 @@ resource "aws_s3_bucket" "secure" {
     Name = "${{ values.project_name }}-bucket"
   }
 }
-
